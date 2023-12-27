@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Avtorizatsia </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="avtor.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Manrope&display=swap" rel="stylesheet">
+
+    
+</head>
+<body>
+    <div class="cont">
+        <div class="avtor">
+            <h>Авторизация</h>
+        </div>
+        <div class="me">
+        <form id="userForm">
+            <label for="username">Почта:</label>
+            <input type="text" id="username" 
+            name = "username" required><br><br>
+
+            <label 
+            for="password">Пароль:</label>
+            <input type="password" id="password" 
+            name = "password" required><br><br>
+            <button type="button" onclick="login()">Войти</button>
+        </div>
+        </form>
+    </div>
+
+    <script>
+        var request = indexedDB.open('userdb', 1);
+        var db;
+
+        request.onupgradeneeded = function(event) {
+            var database = event.target.result;
+            var objectStore = database.createObjectStore('users', { keyPath: 'id', autoIncrement:true });
+            objectStore.createIndex('username', 'username', { unique: true });
+            objectStore.createIndex('password', 'password', { unique: false });
+        };
+
+        request.onsuccess = function(event) {
+            db = event.target.result;
+        };
+
+        request.onerror = function(event) {
+            alert('IndexedDB error: ' + event.target.errorCode);
+        };
+
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            var transaction = db.transaction(['users'], 'readwrite');
+            var objectStore = transaction.objectStore('users');
+            var index = objectStore.index('username');
+
+            var request = index.get(username);
+
+            request.onsuccess = function(event) {
+                var user = event.target.result;
+                if (user) {
+                    if (user.password === password) {
+                        alert('Вы успешно авторизовались');
+                        window.location.href = 'index.html';
+                    } else {
+                        alert('Пароль неверный');
+                    }
+                } else {
+                    var addUserRequest = objectStore.add({ username: username, password: password });
+                    addUserRequest.onsuccess = function() {
+                        alert('Вы успешно зарегистрировались');
+                        window.location.href = 'index.html';
+                    };
+                }
+            };
+        }
+    </script>
+</body>
+</html>
+    
+</body>
+</html>

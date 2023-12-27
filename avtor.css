@@ -1,0 +1,25 @@
+*{
+    background-color: rgb(212, 214, 214);
+}
+.cont { position: relative;
+}  
+.avtor{
+    font-size: 60px;
+    font-family: 'Manrope', sans-serif;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+    
+
+}
+.me{
+    font-family: 'Manrope', sans-serif;
+    font-size: 20px;
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
